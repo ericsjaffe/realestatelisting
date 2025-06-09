@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Real Estate Listing Writer</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>🏡 Real Estate Listing Writer</h1>
+    <form method="post">
+        <label>Property Type:</label>
+        <input type="text" name="property_type" placeholder="e.g., Single-family home" required><br>
+
+        <label>Bedrooms:</label>
+        <input type="number" name="bedrooms" required><br>
+
+        <label>Bathrooms:</label>
+        <input type="number" name="bathrooms" required><br>
+
+        <label>Square Footage:</label>
+        <input type="number" name="sqft"><br>
+
+        <label>Key Features:</label>
+        <textarea name="features" placeholder="e.g., updated kitchen, pool, large backyard"></textarea><br>
+
+        <label>Location Details:</label>
+        <textarea name="location" placeholder="e.g., quiet neighborhood near great schools"></textarea><br>
+
+        <label>Tone/Style:</label>
+        <select name="style">
+            <option value="professional">Professional</option>
+            <option value="luxury">Luxury</option>
+            <option value="family-friendly">Family-Friendly</option>
+            <option value="investor">Investor-Focused</option>
+        </select><br><br>
+
+        <button type="submit">Generate Listing</button>
+    </form>
+
+    {% if description %}
+    <div class="output">
+        <h2>📝 Generated Listing:</h2>
+        <p>{{ description }}</p>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
