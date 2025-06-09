@@ -7,40 +7,61 @@
 <body>
 <div class="container">
     <h1>🏡 Real Estate Listing Writer</h1>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         <label>Property Type:</label>
-        <input type="text" name="property_type" placeholder="e.g., Single-family home" required><br>
-
+        <input type="text" name="property_type" required><br>
         <label>Bedrooms:</label>
         <input type="number" name="bedrooms" required><br>
-
         <label>Bathrooms:</label>
         <input type="number" name="bathrooms" required><br>
-
         <label>Square Footage:</label>
         <input type="number" name="sqft"><br>
-
         <label>Key Features:</label>
-        <textarea name="features" placeholder="e.g., updated kitchen, pool, large backyard"></textarea><br>
-
-        <label>Location Details:</label>
-        <textarea name="location" placeholder="e.g., quiet neighborhood near great schools"></textarea><br>
-
-        <label>Tone/Style:</label>
+        <textarea name="features"></textarea><br>
+        <label>Location:</label>
+        <textarea name="location"></textarea><br>
+        <label>Style:</label>
         <select name="style">
             <option value="professional">Professional</option>
             <option value="luxury">Luxury</option>
             <option value="family-friendly">Family-Friendly</option>
             <option value="investor">Investor-Focused</option>
-        </select><br><br>
-
+        </select><br>
+        <label>Upload Image:</label>
+        <input type="file" name="media" accept="image/*"><br><br>
         <button type="submit">Generate Listing</button>
     </form>
 
     {% if description %}
     <div class="output">
-        <h2>📝 Generated Listing:</h2>
+        <h2>{{ title }}</h2>
         <p>{{ description }}</p>
+        <h3>Highlights:</h3>
+        <ul>
+        {% for b in bullets %}
+            <li>{{ b }}</li>
+        {% endfor %}
+        </ul>
+        {% if image_url %}
+            <img src="{{ image_url }}" width="100%">
+        {% endif %}
+        <form method="post" action="/export_pdf">
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="hidden" name="description" value="{{ description }}">
+            {% for b in bullets %}
+                <input type="hidden" name="bullets" value="{{ b }}">
+            {% endfor %}
+            <input type="hidden" name="image_url" value="{{ image_url }}">
+            <button type="submit">Download PDF</button>
+        </form>
+        <form method="post" action="/export_mls">
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="hidden" name="description" value="{{ description }}">
+            {% for b in bullets %}
+                <input type="hidden" name="bullets" value="{{ b }}">
+            {% endfor %}
+            <button type="submit">Export MLS Text</button>
+        </form>
     </div>
     {% endif %}
 </div>

@@ -1,29 +1,29 @@
-# Real Estate Listing Writer
+# Real Estate Listing Writer (Advanced)
 
-This is a Flask web app that uses OpenAI GPT-3.5 to generate real estate listing descriptions.
-
-## Features
-- Input form for property details
-- Custom tone (luxury, family-friendly, etc.)
-- AI-generated description
-- Ready for Render deployment
+Generate a full real estate listing with GPT, including:
+- Auto-generated title
+- Listing description
+- Bullet point highlights
+- Image upload
+- PDF + MLS export
 
 ## Setup
+
 1. Install dependencies:
 ```
 pip install -r requirements.txt
 ```
 
-2. Add your `.env` file:
+2. Add your `.env`:
 ```
-OPENAI_API_KEY=your-key-here
+OPENAI_API_KEY=your-key
 ```
 
-3. Run locally:
+3. Run it:
 ```
 flask run
 ```
 
-4. Deploy to Render:
-- Add environment variable `OPENAI_API_KEY`
-- Use start command: `gunicorn app:app`
+## Deploy to Render
+- Add your OpenAI API key
+- Set start command: `gunicorn app:app`
