@@ -2,48 +2,68 @@
 <html>
 <head>
     <title>Real Estate Listing Writer</title>
-    <script>
-    async function fetchZillowData() {
-        const url = document.getElementById("zillow_url").value;
-        const result = await fetch(`https://realty-in-us.p.rapidapi.com/properties/v2/detail?zpid=${extractZpid(url)}`, {
-            method: "GET",
-            headers: {
-                "X-RapidAPI-Key": "bea0bf4b12mshdc9f9e18688347bp10c67djsnd9e4d6dd4cab",
-                "X-RapidAPI-Host": "rapidapi.com"
-            }
-        });
-        const data = await result.json();
-        if (data?.property_id) {
-            document.getElementById("title").value = data.address.line;
-            document.getElementById("description").value = `Beautiful ${data.beds}-bed, ${data.baths} bath home with ${data.building_size?.size} sqft.`;
-        }
-    }
-
-    function extractZpid(url) {
-        const match = url.match(/_(\d+)\/|zpid=(\d+)/);
-        return match ? (match[1] || match[2]) : "";
-    }
-    </script>
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h1>🏠 Real Estate Listing Writer</h1>
-    <form action="/export_mls" method="POST">
-        <label>Zillow URL:</label>
-        <input type="text" id="zillow_url" placeholder="Paste Zillow listing URL" />
-        <button type="button" onclick="fetchZillowData()">Fetch Property Info</button><br><br>
-
-        <label>Title:</label><br>
-        <input type="text" name="title" id="title" /><br><br>
-
-        <label>Description:</label><br>
-        <textarea name="description" id="description"></textarea><br><br>
-
-        <label>Highlights:</label><br>
-        <input type="text" name="bullets" /><br>
-        <input type="text" name="bullets" /><br>
-        <input type="text" name="bullets" /><br><br>
-
-        <button type="submit">Export MLS Format</button>
+<div class="container">
+    <h1>🏡 Real Estate Listing Writer</h1>
+    <form method="post" enctype="multipart/form-data">
+        <label>Property Type:</label>
+        <input type="text" name="property_type" required><br>
+        <label>Bedrooms:</label>
+        <input type="number" name="bedrooms" required><br>
+        <label>Bathrooms:</label>
+        <input type="number" name="bathrooms" required><br>
+        <label>Square Footage:</label>
+        <input type="number" name="sqft"><br>
+        <label>Key Features:</label>
+        <textarea name="features"></textarea><br>
+        <label>Location:</label>
+        <textarea name="location"></textarea><br>
+        <label>Style:</label>
+        <select name="style">
+            <option value="professional">Professional</option>
+            <option value="luxury">Luxury</option>
+            <option value="family-friendly">Family-Friendly</option>
+            <option value="investor">Investor-Focused</option>
+        </select><br>
+        <label>Upload Image:</label>
+        <input type="file" name="media" accept="image/*"><br><br>
+        <button type="submit">Generate Listing</button>
     </form>
+
+    {% if description %}
+    <div class="output">
+        <h2>{{ title }}</h2>
+        <p>{{ description }}</p>
+        <h3>Highlights:</h3>
+        <ul>
+        {% for b in bullets %}
+            <li>{{ b }}</li>
+        {% endfor %}
+        </ul>
+        {% if image_url %}
+            <img src="{{ image_url }}" width="100%">
+        {% endif %}
+        <form method="post" action="/export_pdf">
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="hidden" name="description" value="{{ description }}">
+            {% for b in bullets %}
+                <input type="hidden" name="bullets" value="{{ b }}">
+            {% endfor %}
+            <input type="hidden" name="image_url" value="{{ image_url }}">
+            <button type="submit">Download PDF</button>
+        </form>
+        <form method="post" action="/export_mls">
+            <input type="hidden" name="title" value="{{ title }}">
+            <input type="hidden" name="description" value="{{ description }}">
+            {% for b in bullets %}
+                <input type="hidden" name="bullets" value="{{ b }}">
+            {% endfor %}
+            <button type="submit">Export MLS Text</button>
+        </form>
+    </div>
+    {% endif %}
+</div>
 </body>
 </html>
