@@ -57,11 +57,18 @@ def export_pdf():
     pdf.seek(0)
     return send_file(pdf, as_attachment=True, download_name="listing.pdf", mimetype="application/pdf")
 
-@app.route("/export_mls", methods=["POST"])
+ @app.route("/export_mls", methods=["POST"])
 def export_mls():
     title = request.form.get("title")
     description = request.form.get("description")
     bullets = request.form.getlist("bullets")
+
+    content = f"{title}\n\n{description}\n\nHighlights:\n" + "\n".join(f"- {b}" for b in bullets)
+
+    output = BytesIO()
+    output.write(content.encode("utf-8"))
+    output.seek(0)
+    return send_file(output, as_attachment=True, download_name="listing_mls.txt", mimetype="text/plain")
 
 content = f"{title}\n\n{description}\n\nHighlights:\n" + "\n".join(f"- {b}" for b in bullets)
 
