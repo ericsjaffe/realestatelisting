@@ -63,7 +63,7 @@ def export_mls():
     description = request.form.get("description")
     bullets = request.form.getlist("bullets")
 
-    content = f"{title}
+content = f"{title}\n\n{description}\n\nHighlights:\n" + "\n".join(f"- {b}" for b in bullets)
 
 {description}
 
